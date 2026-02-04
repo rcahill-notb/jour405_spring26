@@ -1,3 +1,10 @@
+---
+title: "UMD Fees"
+---
+
+Follow along with the demo to learn how to calculate percentage change using R and the Tidyverse. You should get started by loading the tidyverse in a new R block.
+
+
 ### Task 1: Load the tidyverse
 
 
@@ -26,7 +33,7 @@ umd_fees_pct <- umd_fees |> mutate(pct_change = (`Fall 2024`- `Fall 2021`)/`Fall
 
 Write a few sentences about what you found in the data. What's the story here?
 
-
+Student counseling center is a totally new fee, so the percent change is "infinite." 150% increase in "sustainability fees" is the next-greatest increase, followed by a 39% increase in shuttle bus fees. Most other fees increased by between 10 and 20% over the four-year period.
 
 
 
