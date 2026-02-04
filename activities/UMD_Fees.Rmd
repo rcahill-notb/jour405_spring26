@@ -1,10 +1,3 @@
----
-title: "UMD Fees"
----
-
-Follow along with the demo to learn how to calculate percentage change using R and the Tidyverse. You should get started by loading the tidyverse in a new R block.
-
-
 ### Task 1: Load the tidyverse
 
 
