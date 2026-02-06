@@ -1,0 +1,79 @@
+---
+  title: "HW2 Prince George's County Crime"
+---
+  
+  In this assignment, we will be working with a dataset reporting the number of crimes by month in Prince George's County, Maryland, for every month in 2024. 
+
+### Task 1: Load the Tidyverse
+
+You will need to load the tidyverse library
+
+```{r}
+library(tidyverse)
+```
+
+Then you'll load the data from the web. The URL for the data is: https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/pg_crime_totals_2024.csv. You will create a dataframe called `pg_crime` that contains the data from this URL.
+
+### Task 2: Load the Data and Describe It
+
+```{r} 
+pg_crimedata <- read_csv("https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/pg_crime_totals_2024.csv")
+```
+### Task 3: Describe the Data
+
+You should examine that dataframe carefully by clicking on it in the Environment tab in RStudio. Write a couple of sentences describing the categories of incidents. From a reporting standpoint, are any of the categories more important than others? Why or why not? Do any of them make the job of summarizing the data more difficult? Why or why not?
+  
+ Most of the crimes belong to categories like theft, accidents, and stolen cars. Homicides are extremely rare, even at their peak in June there were only eight, compared to 442 stolen cars the same month. The rarity of homicide, and the extreme nature of the crime, would make it more newsworthy. None in particular make it difficult to summarize the data.
+  
+  ANSWER HERE
+
+### Task 4: Calculating Averages
+
+Calculate the total number of incidents per month for each category using `mutate()`, calling the new column `total_incidents`. Then calculate the average number of incidents per month for each category of crime, calling the new column `average_incidents`. Assign the result to a new dataframe called `pg_crime_averages`.
+
+```{r}
+pg_crimedata <- pg_crimedata |> mutate(total_incidents = Jan+Feb+Mar+Apr+May+Jun+Jul+Aug+Sep+Oct+Nov+Dec)
+
+pg_crimedata <- pg_crimedata |> mutate(average = total_incidents/12)
+
+```
+
+### Task 5: Describe the Averages
+
+Examine the new dataframe, `pg_crime_averages`, by clicking on it in the Environment tab in RStudio. Write a couple of sentences describing the average number of incidents per month for each category. Which categories have the highest average number of incidents per month? Which have the lowest? What does this tell you about the pattern of crime in Prince George's County? Are there categories that you have questions about? Why or why not?
+
+ANSWER HERE
+
+Highest number average number of incidents per month are in the "accident," "auto stolen" and "theft from auto" categories, with the lowest in the categories of "robbery residential," "homicide," and "b&e other." Most crimes are non-violent and relatively low-level, with the predictable Maryland Driver Syndrome taking the number one spot by an even more commanding margin if you include "accident with impound." This is generally not a very good county to be a car, or to have things stored in your car. On the other hand, violent crime is quite low across all categories (particularly homicides) so while your car might be at risk, you probably won't be. I do have questions about the legal distinctions between robbery and theft. Is robbery just "theft+violence"? Or is there more to it than that?
+
+### Task 6: Testing a Theory
+
+One theory about crime is that it is more likely to occur in the summer months. Test this theory by creating three new columns using `mutate()` that calculate the percentage change compared to the average for each category of crime for the months of June, July, and August. Call the new columns `june_change`, `july_change`, and `august_change`. Assign the result to a new dataframe called `summer_crime_averages`.
+
+```{r}
+pg_crimedata <- pg_crimedata |> mutate(june_change = (Jun - average)/average*100)
+pg_crimedata <- pg_crimedata |> mutate(july_change = (Jul - average)/average*100)
+summer_crime_averages <- pg_crimedata |> mutate(august_change = (Aug - average)/average*100)
+```
+
+### Task 7: Describe the Summer Crime Averages
+
+Look at the `summer_crime_averages` dataframe by clicking on it in the Environment tab in RStudio. Write a couple of sentences describing the percentage change in the average number of incidents per month for each category of crime for the months of June, July, and August. Do you see any patterns? What does this tell you about the theory that crime is more likely to occur in the summer months?
+
+
+
+ANSWER HERE
+
+Crime as a whole does not go up notably during the summer, but some types of (mostly violent) crimes do. Shootings and homicides saw notable increases, with homicides outpacing the yearlong average in every month of the summer (however, the small sample size in both categories makes it possible this could be a statistical anomaly). Car thefts also saw an increase over the summer. However, other categories (like "accidents," "b&e other," and "theft") remained about the same or even decreased compared to the yearlong average.
+### Task 8: What's the Story?
+  
+  Write up a lede and nutgraf of a story focused on the crime data in Prince George's County. It could be from any of the dataframes you've created in this assignment. The lede should be a single sentence that summarizes the most important information in the data. The nutgraf should be a paragraph that provides more context and explains why the data is important.
+
+Car accidents were by far the most common crimes in Prince George's County last year, with a yearlong average of about 481 accidents every month. 
+
+The next most common crimes were stolen cars and thefts from cars, rounding out a trifecta of vehicle-related lawbreaking. Despite frequent media attention, homicides and other violent crimes remained rare. In fact, with an average of fewer than six murders a month, homicides were among the rarest crimes recording in Prince George's County last year.
+ANSWER HERE
+
+### Task 9: Save Your Work and Put it on GitHub
+
+Save this notebook, then commit it to your local repository. Push the changes to your GitHub repository and submit the URL for this file in ELMS.
