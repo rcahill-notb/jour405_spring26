@@ -1,0 +1,69 @@
+---
+title: "m_m_hw"
+output: html_document
+---
+
+---
+title: "HW8_MandMs"
+---
+
+In this assignment, you'll be picking up where you left off with the M&Ms activity. You'll load the data and perform some basic statistical analysis. Follow the steps below to complete the assignment.
+
+### Task 1: Load the tidyverse
+
+    ```{r load-packages}
+library(tidyverse)
+```
+
+
+
+### Task 2: Load the M&Ms dataset from https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/mandms.csv
+
+```{r load-data}
+# Load the 911 calls data
+mandms_data <- read_csv("https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/mandms.csv")
+```
+
+
+### Task 3: Sample 5 rows of data from the dataset
+
+
+
+```{r}
+set.seed(3)
+
+sample_5 <- mandms_data |> sample_n(50)
+
+```
+
+### Task 4: Calculate the mean age and standard deviation of the sample, using either the blue or white number of M&Ms
+
+```{r}
+sample_5 |> summarise(mean(black))
+sample_5 |> summarise(sd(black))
+
+```
+
+### Task 5: Calculate the mean age and standard deviation of the population, using the same measure as in Task 4
+
+```{r}
+sample_5 |> summarise(mean(red))
+sample_5 |> summarise(sd(red))
+
+```
+
+
+### Task 6: Compare the sample and population statistics
+
+Compare the two sets of means and standard deviations. Are they similar?
+
+They are very similar--not an exact 50/50 split in each sample, but pretty close
+
+### Task 7: Describe the results
+
+Write a few sentences about what you found in the data. What does this tell you about the M&Ms dataset and about the act of random sampling?
+
+While the M&M rarely had an exact 50/50 split, they tended to average out somewhere around there (admittedly, with a few exceptions)
+
+
+When finished, save your work, switch to GitHub Desktop, then add, commit and push your changes to GitHub and submit the URL of the notebook in ELMS.
