@@ -1,0 +1,24 @@
+---
+title: "final_project"
+output: html_document
+---
+
+
+### Task 1: Load the tidyverse and install and load janitor
+
+```{r}
+install.packages("tidyverse")
+library(tidyverse)
+install.packages("janitor")
+library(janitor)
+```
+
+### Task 2: Load dataset from https://raw.githubusercontent.com/rcahill-notb/jour405_spring26/refs/heads/main/Medals%2BTemperature%20by%20country%20%20-%20Medals.csv
+
+```{r}
+medals_vs_temp <- read_csv("https://raw.githubusercontent.com/rcahill-notb/jour405_spring26/refs/heads/main/Medals%2BTemperature%20by%20country%20%20-%20Medals.csv") |> clean_names()
+```
+
+This data analyses the number of medals won by each country in the 2018, 2022 and 2026 Winter Olympics, and compares them to the 100-year average temperature within the country. Unfortunately, I could not find average 100-year temperatures for all countries, and while most of the countries which lacked that data didn't win medals anyway, one of them (Liechtenstein) did win one medal across the three Olympics. The absence of that one country from the picture doesn't change the picture too much, but I'd still like to find that data. Additionally, I only included countries which competed in the 2018 Olympics in the data, which excludes some of the hottest countries (including the hottest, Burkina Faso).
+
+As far as the relationship to average temperature and number of medals won, there is definitely a correlation, with countries like Norway (number one in medals), Canada, Switzerland and Russia punching well above their weight in number of medals won (and Russia likely would have won even more if they hadn't gotten themselves banned). Likewise, only two medal-winning countries have average temperatures above 60 degrees Fahrenheit, and only one of those (Australia) won more than one medal. However, many of the countries with the highest medal count (including the USA, Germany, the Netherlands, Italy and Japan) are not the coldest countries (though all save for the Netherlands have very cold and mountainous regions). But while cold countries don't always win the most medals, they usually win at least some medals. Of the 27 countries with average 100-year temperatures of 48 degrees Fahrenheit or less, only five failed to win at least one medal across the three Olympics.
