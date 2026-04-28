@@ -1,0 +1,46 @@
+---
+title: "olympics_tests"
+output: html_document
+---
+
+```{r}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+options(scipen = 999)
+```
+
+```{r}
+medaltemp <- read.csv("https://raw.githubusercontent.com/rcahill-notb/jour405_spring26/refs/heads/main/Medals%2BTemperature%20by%20country%20%20-%20Medals.csv")
+```
+
+```{r}
+summary(medaltemp$`X23.4`)
+medaltemp |> arrange(desc(`X23.4`)) |> head(10)
+```
+```{r}
+```
+
+
+```{r}
+medaltemp |>
+  ggplot(aes(x = `Temperature..100.year.average..Fahrenheit.`, y = `X23.4`)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  labs(x = "Temperature..100.year.average..Fahrenheit.", y = "X23.4",
+       title = "Number of medals vs 100 year average temperatures by country")
+```
+```{r}
+model <- lm(`Temperature..100.year.average..Fahrenheit.` ~ `X23.4`, data = medaltemp)
+summary(model)
+```
+```{r}
+medaltemp <- medaltemp |>
+  mutate(
+    predicted = predict(model),
+    residual = `Temperature..100.year.average..Fahrenheit.` - predicted,
+    abs_residual = abs(residual)
+  ) |>
+  arrange(desc(abs_residual))
+
+head(medaltemp |> select(1, `X23.4`, `Temperature..100.year.average..Fahrenheit.`, predicted, residual), 10)
+```
