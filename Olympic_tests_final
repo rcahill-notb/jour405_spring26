@@ -1,0 +1,91 @@
+---
+title: "olympic_tests"
+output: html_document
+---
+
+
+```{r}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(corrplot)
+options(scipen = 999)
+```
+
+```{r}
+medaltemp <- read.csv("https://raw.githubusercontent.com/rcahill-notb/jour405_spring26/refs/heads/main/Copy%20of%20Medals%2BTemperature%20by%20country%20%20-%20Medals.csv")
+```
+
+```{r}
+summary(medaltemp$`Total.medals`)
+medaltemp |> arrange(desc(`Total.medals`)) |> head(10)
+```
+This graph plots the correlation between the number of medals each country won in the last three Winter Olympics, and the average 100-year temperature for each country.
+
+```{r}
+medaltemp |>
+  ggplot(aes(x = `Total.medals`, y = `Temperature..100.year.average..Fahrenheit.`)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  labs(x = "Total.medals", y = "Temperature..100.year.average..Fahrenheit.",
+       title = "Number of medals vs 100 year average temperatures by country")
+```
+
+In the graph above, you can see that decreasing temperature is correlated with a greater number of medals. However there are a lot of data points with an x-value of 0 (no medals). What would happen if we only measured the countries that won at least one medal?
+
+```{r}
+medal_winners <- read.csv("https://raw.githubusercontent.com/rcahill-notb/jour405_spring26/refs/heads/main/Medals%2BTemperature%20by%20country--only%20winners%20-%20Medals.csv")
+```
+
+```{r}
+summary(medal_winners$`Total.medals`)
+medal_winners |> arrange(desc(`Total.medals`)) |> head(10)
+```
+```{r}
+medal_winners |>
+  ggplot(aes(x = `Total.medals`, y = `Temperature..100.year.average..Fahrenheit.`)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  labs(x = "Total.medals", y = "Temperature..100.year.average..Fahrenheit.",
+       title = "Number of medals vs 100 year average temperatures by country")
+```
+
+You can still see a correlation here, although not as strongly. Now, let's construct a linear regression model which includes not just temperature but also per-capita GDP as a factor (since wealthier countries would presumably have greater resources to train world-class athletes and win medals). First we'll be using the full data set, including countries who competed in at least one Winter Olympics in the past decade, but did not win any medals.
+
+```{r}
+model <- lm (Total.medals ~ `Temperature..100.year.average..Fahrenheit.` + `GDP.per.capita` + `Gold`, data = medaltemp)
+summary(model)
+```
+Next we'll calculate and visualize a correlation matrix.
+
+```{r}
+selected_vars <- medaltemp |>  select(`Total.medals`,`Temperature..100.year.average..Fahrenheit.`,`GDP.per.capita`, `Gold`)
+cor(selected_vars)
+```
+```{r}
+corr_matrix <- cor(selected_vars)
+corrplot(corr_matrix, method = "circle")
+```
+As you can see, there is a positive correlation between GDP per capita and the number of medals won (both gold and total) and a negative correlation between temperature and the number of medals won. What's interesting is that the effect of temperature and GDP on the number of medals won is almost exactly the same. There is a roughly 42% correlation between the number of medals won and either of the other two variables. The correlation between the number of gold medals won and the total number of medals is over 96%--no surprise there.
+
+Next let's try it with the reduced dataset
+
+```{r}
+model <- lm (Total.medals ~ `Temperature..100.year.average..Fahrenheit.` + `GDP.per.capita` + `Gold` + `Silver` + `Bronze`, data = medal_winners)
+summary(model)
+```
+```{r}
+second_vars <- medal_winners |>  select(`Total.medals`,`Temperature..100.year.average..Fahrenheit.`,`GDP.per.capita`, `Gold`)
+cor(second_vars)
+```
+Here, the impacts of temperature and GDP diverge considerably. When only considering countries which won at least one medal, there  is a 52% correlation between GDP per capita and the number of medals won. Meanwhile, there is only a 9% correlation between colder temperatures and the number of medals won. This seems to suggest that it doesn't really matter how cold a country gets, as long as they are beyond a certain threshold (probably cold enough to have snow and ice, if I had to guess).
+
+Here's what that looks like visualized
+
+```{r}
+corr_matrix <- cor(second_vars)
+corrplot(corr_matrix, method = "circle")
+```
+
+Final story pitch: I'd say the most interesting potential story that could come from this is something like "The making of a Winter Olympic champion: why cold, snowy temperatures matter less than you might think." Since GDP per capita is just as strongly correlated with medals won as temperature, if not more so, it would be interesting to look at some of the specific policy measures that wealthier nations take to train their athletes. For instance, I know the Netherlands has produced a lot of speed skating stars, so it'd be interesting to see what kind of facilities or programs they have to train people for the Olympics. 
+
+One potential problem that I can think of is that GDP per capita isn't exactly the same thing is personal or societal wealth (for example, if the wealth is not shared fairly). But there's a strong correlation and it's the closest analogue I can think of. Additionally, there are some places--like the U.S, for example--which have huge regions that are cold and snowy, but because the countries are so vast and contain so many different climate types, their average temperature is relatively high. France, Italy and Germany are other examples of this. Because of this, there is probably a stronger correlation between cold/snowy regions and Winter Olympics success than can be captured by this model. It's just difficult to measure because of the size differences between countries, and the different levels of climatic diversity between them.
